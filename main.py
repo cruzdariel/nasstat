@@ -37,7 +37,7 @@ class Airport():
         self.airportid = airportid
         self.airportdelays = None
 
-    def getAirportDelays(self):
+    def getDelays(self):
             """
             Fetches live airport delay data from the FAA NAS Status API and updates self.airportdelays.
 
@@ -121,7 +121,7 @@ class Airport():
         if self.airportevents is None:
             try:
                 print("Airport events is None, trying to refresh...")
-                self.getAirportDelays()
+                self.getDelays()
             except Exception as e:
                 print(f"Error while fetching airport events: {e}")
                 return False 
