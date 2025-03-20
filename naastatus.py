@@ -38,6 +38,7 @@ class Airport():
         self.lastupdate = None
         self.airportclosures = None
         self.airportdelays = None
+        self.possibledelays = None
 
     def getDelays(self):
             """
@@ -239,3 +240,48 @@ class Airport():
                 return False 
 
         return self.airportdelays is not None
+    
+    def getPossibleDelays(self):
+        """
+        Fetches possible future delays from the FAA operations plan API.
+        Only retrieves events that specifically mention the airport code.
+
+        Updates:
+            self.possibledelays: Dictionary of possible delays or None if no data available
+        """
+        try:
+            response = requests.get("https://nasstatus.faa.gov/api/operations-plan")
+            response.raise_for_status()
+            data = response.json()
+        except (requests.RequestException, json.JSONDecodeError) as e:
+            print(f"\x1b[34;1mNAASTATUS\x1b[0m Error fetching operations plan: {e}")
+            self.possibledelays = None
+            return
+
+        possible_delays = {}
+        
+        # Check terminal planned events
+        if "terminalPlanned" in data:
+            for event in data["terminalPlanned"]:
+                event_text = event.get("event", "")
+                if self.airportid in event_text:
+                    # Remove all airport codes using regex - only when they follow a slash or are at the beginning
+                    delay_type = re.sub(r'/([A-Z]{3})\b', '', event_text)
+                    # Also remove any remaining airport code that might be at the start
+                    delay_type = re.sub(r'^([A-Z]{3})\b/?', '', delay_type).strip()
+                    possible_delays[delay_type] = event.get("time", "")
+        
+        # Check enroute planned events - only include if they mention this airport
+        if "enRoutePlanned" in data:
+            for event in data["enRoutePlanned"]:
+                event_text = event.get("event", "")
+                if self.airportid in event_text:
+                    # Remove all airport codes using regex
+                    delay_type = re.sub(r'/[A-Z]{3}', '', event_text)
+                    # Also remove any remaining airport code that might be at the start
+                    delay_type = re.sub(r'^[A-Z]{3}/?', '', delay_type).strip()
+                    possible_delays[delay_type] = event.get("time", "")
+        
+        self.possibledelays = possible_delays if possible_delays else None
+        self.lastupdate = requests.get("https://worldtimeapi.org/api/timezone/Etc/UTC").json()["datetime"]
+        return self.possibledelays
