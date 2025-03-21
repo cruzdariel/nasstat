@@ -113,6 +113,7 @@ class Airport():
             # Update the delays data and record the current time
             self.airportdelays = parse_faa_xml(response.text)
             self.lastupdate = requests.get("https://worldtimeapi.org/api/timezone/Etc/UTC").json()["datetime"]
+            return self.airportdelays
     
     def getClosures(self):
         """
