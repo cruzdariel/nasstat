@@ -21,12 +21,15 @@ A python wrapper of the United States Federal Aviation Authority's [National Air
 - [Example Use Cases]()
 - [Attribution & Licensing]()
 - Models
-  - [Airports()](###Airports)
-  - [Airspaces()](###Airspaces)
+  - [Airport()](###Airport)
 - Methods
-  - [Airports()](###Airports)
-  - [Airspaces()](###Airspaces)
-
+  - Airport
+    - [.getDelays()](###getDelays)
+    - [.averageDelay()](###averageDelay)
+    - [.delayReasons()](###delayReasons)
+    - [.isDelay()](###isDelay)
+    - [.getPossibleDelays()](###getPossibleDelays)
+    - [.getClosures()](###getClosures)
 ## Dependencies
 Run this command to install the required packages:
 ```bash
@@ -81,10 +84,6 @@ MCO = Airport("MCO") # loads in an instance of MCO and all associated data with 
 - `airportclosures` (dict): Information about current airport closures, if any
 - `airportdelays` (dict): Details about current delays including minimum, maximum, average delay times, and reasons
 - `possibledelays` (dict): Information about potential upcoming delays
-
-### Airspace()
-
-Work in progress, not yet implemented.
 
 ## Methods
 ### Airport.getDelays()
