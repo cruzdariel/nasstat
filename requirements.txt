@@ -1,4 +1,4 @@
-requests
+requests>=2.31.1
 json
 xml.etree.ElementTree
 re

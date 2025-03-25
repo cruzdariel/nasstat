@@ -1,17 +1,25 @@
-from setuptools import setup, find_packages
+import setuptools
 
-setup(
-    name='nasstat',
-    version='0.1.0',
-    author='Dariel Cruz Rodriguez',
-    author_email='hello@dariel.us',
-    description='A python wrapper of the United States Federal Aviation Authority National Airspace System API developed by Dariel Cruz Rodriguez.',
-    packages=find_packages(),
-    install_requires=["requests",],
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
+    name="nasstat",                           
+    version="0.1.0",                          
+    author="Dariel Cruz Rodriguez",
+    author_email="hello@dariel.us",
+    description="A python wrapper of the United States Federal Aviation Authority's National Airspace System API",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/cruzdariel/nasstat",  
+    packages=setuptools.find_packages(),       
     classifiers=[
-    'Programming Language :: Python :: 3',
-    'License :: OSI Approved :: MIT License',
-    'Operating System :: OS Independent',
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",   
+        "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.11",                   
+    install_requires=[                         
+        "requests>=2.20.0",
+    ],
 )

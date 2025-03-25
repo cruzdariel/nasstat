@@ -25,9 +25,13 @@ A python wrapper of the United States Federal Aviation Authority's [National Air
 - Methods
   - Airport
     - [.getDelays()](###getDelays)
+      - [.getDepartureDelays()](###getDelays)
+      - [.getArrivalDelays()](###getDelays)
     - [.averageDelay()](###averageDelay)
     - [.delayReasons()](###delayReasons)
     - [.isDelay()](###isDelay)
+    - [.getPossibleDelays()](###getPossibleDelays)
+    - [.getClosures()](###getClosures)
     - [.getPossibleDelays()](###getPossibleDelays)
     - [.getClosures()](###getClosures)
 ## Dependencies
@@ -87,6 +91,8 @@ MCO = Airport("MCO") # loads in an instance of MCO and all associated data with 
 
 ## Methods
 ### Airport.getDelays()
+If you want to filter for just departure or arrival delays, use either `Airport.getDepartureDelays()` or `Airport.getArrivalDelays()`.
+
 ```python
 airportcode = "MCO"
 airport = Airport(airportcode)
