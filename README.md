@@ -18,8 +18,7 @@ A python wrapper of the United States Federal Aviation Authority's [National Air
 ## Table of Contents
 - [Dependencies](##Dependencies)
 - [Installation](##Installation)
-- [Example Use Cases]()
-- [Attribution & Licensing]()
+- [Attribution & Licensing](##Attributon)
 - Models
   - [Airport()](###Airport)
 - Methods
@@ -46,7 +45,19 @@ NASSTAT uses the following packages, many of which are included in the standard 
 - `json` - for parsing the JSON response from the FAA's API
 - `re` - for regular expression matching
 
+NASSTAT requires Python 3.11.0 or later. I'm not sure if it will work on older Python versions, so if you're confident it will you can override the Python version check by using `pip install nasstat --ignore-requires-python`.
+
 ## Installation
+NASSTAT is published as a package on the [Python Package Index](https://pypi.org/project/nasstat/). To install this into your project run the command:
+
+```bash
+pip install nasstat
+```
+and to import it into your project, use the command:
+
+```python
+from nasstat import Airport
+```
 
 ## Attribution & Licensing
 ### Attribution
