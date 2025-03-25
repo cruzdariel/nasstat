@@ -14,6 +14,7 @@ import requests
 import json
 import xml.etree.ElementTree as ET
 import re
+from datetime import datetime, timezone
 
 class Airport():
     """
@@ -110,11 +111,81 @@ class Airport():
 
                 return delays if delays else None
 
-            # Update the delays data and record the current time
             self.airportdelays = parse_faa_xml(response.text)
-            self.lastupdate = requests.get("https://worldtimeapi.org/api/timezone/Etc/UTC").json()["datetime"]
+            self.lastupdate = datetime.utcnow().isoformat()
             return self.airportdelays
+
+    def getDepartureDelays(self):
+        """
+        Fetches departure delay data only.
+
+        Outputs:
+            - departure_delays (dict): A dictionary of departure delays with details, or None if no delays are found.
+        """
+        if self.airportdelays is None:
+            try:
+                print("\x1b[34;1mNAASTATUS\x1b[0m Airport Delays is empty, attempting to refresh...")
+                self.getDelays()
+            except Exception as e:
+                print("\x1b[34;1mNAASTATUS\x1b[0m " + f"Error while fetching airport events: {e}")
+                return None
+
+        departure_delays = {}
+        if self.airportdelays is not None:
+            for category, data in self.airportdelays.items():
+                if "Departure" in category:
+                    departure_delays[category] = data
+
+        return departure_delays if departure_delays else None
     
+    def getArrivalDelays(self):
+        """
+        Fetches arrival delay data only.
+
+        Outputs:
+            - arrival_delays (dict): A dictionary of arrival delays with details, or None if no delays are found.
+        """
+        if self.airportdelays is None:
+            try:
+                print("\x1b[34;1mNAASTATUS\x1b[0m Airport Delays is empty, attempting to refresh...")
+                self.getDelays()
+            except Exception as e:
+                print("\x1b[34;1mNAASTATUS\x1b[0m " + f"Error while fetching airport events: {e}")
+                return None
+
+        arrival_delays = {}
+        if self.airportdelays is not None:
+            for category, data in self.airportdelays.items():
+                if "Arrival" in category:
+                    arrival_delays[category] = data
+
+        return arrival_delays if arrival_delays else None
+
+    def getGroundDelays(self):
+            """
+            Fetches ground delay data only.
+
+            Outputs:
+                - ground_delays (dict): A dictionary of ground delay details, or None if no ground delays are found.
+            """
+            if self.airportdelays is None:
+                try:
+                    print("\x1b[34;1mNAASTATUS\x1b[0m Airport Delays is empty, attempting to refresh...")
+                    self.getDelays()
+                except Exception as e:
+                    print("\x1b[34;1mNAASTATUS\x1b[0m " + f"Error while fetching airport events: {e}")
+                    return None
+
+            ground_delays = {}
+            if self.airportdelays is not None:
+                for category, data in self.airportdelays.items():
+                    if category == "Ground":
+                        ground_delays[category] = data
+            else:
+                return None
+
+            return ground_delays if ground_delays else None
+
     def getClosures(self):
         """
         Fetches airport closure data from the FAA NAS Status API and updates self.airportclosures.
@@ -133,7 +204,6 @@ class Airport():
             root = ET.fromstring(xml_string)
             closures = []
 
-            # Find the Airport Closures section
             for delay_type in root.findall("Delay_type"):
                 if delay_type.find("Name") is not None and delay_type.find("Name").text == "Airport Closures":
                     for airport in delay_type.findall(".//Airport"):
@@ -148,9 +218,8 @@ class Airport():
 
             return closures if closures else None
 
-        # Assign the result to self.airportclosures
         self.airportclosures = parse_closures(response.text)
-        self.lastupdate = requests.get("https://worldtimeapi.org/api/timezone/Etc/UTC").json()["datetime"]
+        self.lastupdate = datetime.utcnow().isoformat()
         return self.airportclosures
 
     def averageDelay(self):
@@ -266,23 +335,19 @@ class Airport():
             for event in data["terminalPlanned"]:
                 event_text = event.get("event", "")
                 if self.airportid in event_text:
-                    # Remove all airport codes using regex - only when they follow a slash or are at the beginning
                     delay_type = re.sub(r'/([A-Z]{3})\b', '', event_text)
-                    # Also remove any remaining airport code that might be at the start
                     delay_type = re.sub(r'^([A-Z]{3})\b/?', '', delay_type).strip()
                     possible_delays[delay_type] = event.get("time", "")
         
-        # Check enroute planned events - only include if they mention this airport
+        # Check enroute planned events
         if "enRoutePlanned" in data:
             for event in data["enRoutePlanned"]:
                 event_text = event.get("event", "")
                 if self.airportid in event_text:
-                    # Remove all airport codes using regex
                     delay_type = re.sub(r'/[A-Z]{3}', '', event_text)
-                    # Also remove any remaining airport code that might be at the start
                     delay_type = re.sub(r'^[A-Z]{3}/?', '', delay_type).strip()
                     possible_delays[delay_type] = event.get("time", "")
         
         self.possibledelays = possible_delays if possible_delays else None
-        self.lastupdate = requests.get("https://worldtimeapi.org/api/timezone/Etc/UTC").json()["datetime"]
+        self.lastupdate = datetime.utcnow().isoformat()
         return self.possibledelays
