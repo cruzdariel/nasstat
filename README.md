@@ -16,37 +16,63 @@
 A python wrapper of the United States Federal Aviation Authority's [National Airspace System](https://nasstatus.faa.gov/) API developed by [Dariel Cruz Rodriguez](dariel.us).
 
 ## Table of Contents
-- [Dependencies](##Dependencies)
-- [Installation](##Installation)
-- [Example Use Cases]()
-- [Attribution & Licensing]()
-- Models
-  - [Airport()](###Airport)
-- Methods
-  - Airport
-    - [.getDelays()](###getDelays)
-      - [.getDepartureDelays()](###getDelays)
-      - [.getArrivalDelays()](###getDelays)
-    - [.averageDelay()](###averageDelay)
-    - [.delayReasons()](###delayReasons)
-    - [.isDelay()](###isDelay)
-    - [.getPossibleDelays()](###getPossibleDelays)
-    - [.getClosures()](###getClosures)
-    - [.getPossibleDelays()](###getPossibleDelays)
-    - [.getClosures()](###getClosures)
-## Dependencies
-Run this command to install the required packages:
+- [Installation](#installation)
+- [Dependencies](#dependencies)
+- [Quick Start](#quick-start)
+- [Attribution & Licensing](#attribution--licensing)
+- [Models](#models)
+  - [Airport()](#airport)
+- [Methods](#methods)
+  - [.getDelays()](#airportgetdelays)
+  - [.getDepartureDelays()](#airportgetdelays)
+  - [.getArrivalDelays()](#airportgetdelays)
+  - [.getGroundDelays()](#airportgetdelays)
+  - [.averageDelay()](#airportaveragedelay)
+  - [.delayReasons()](#airportdelayreasons)
+  - [.isDelay()](#airportisdelay)
+  - [.getPossibleDelays()](#airportgetpossibledelays)
+  - [.getClosures()](#airportgetclosures)
+## Installation
+
+Install NASSTAT via pip:
+
 ```bash
-pip install requests xml.etree.ElementTree json re
+pip install nasstat
 ```
 
-NASSTAT uses the following packages, many of which are included in the standard library of vanilla Python installations:
-- `requests` - for making HTTP requests to the FAA's API
+That's it! All dependencies will be installed automatically.
+
+## Dependencies
+
+NASSTAT requires:
+- **Python 3.11 or higher**
+- `requests>=2.20.0` - for making HTTP requests to the FAA's API (installed automatically)
+
+The following standard library modules are also used (included with Python):
 - `xml.etree.ElementTree` - for parsing the XML response from the FAA's API
 - `json` - for parsing the JSON response from the FAA's API
 - `re` - for regular expression matching
+- `datetime` - for timestamp handling
 
-## Installation
+## Quick Start
+
+```python
+import nasstat
+
+# Create an airport object
+airport = nasstat.Airport("JFK")
+
+# Check for delays
+if airport.isDelay():
+    print(f"Delays at JFK: {airport.averageDelay()} minutes")
+    print(f"Reason: {airport.delayReasons()}")
+else:
+    print("No delays at JFK")
+
+# Get detailed delay information
+delays = airport.getDelays()
+print(delays)
+```
 
 ## Attribution & Licensing
 ### Attribution
@@ -79,8 +105,21 @@ SOFTWARE.
 ## Models
 ### Airport()
 #### Importing
+
+You can import the Airport class in two ways:
+
+**Option 1: Import the module**
 ```python
-MCO = Airport("MCO") # loads in an instance of MCO and all associated data with it
+import nasstat
+
+MCO = nasstat.Airport("MCO")  # loads in an instance of MCO and all associated data with it
+```
+
+**Option 2: Import the class directly**
+```python
+from nasstat import Airport
+
+MCO = Airport("MCO")  # loads in an instance of MCO and all associated data with it
 ```
 #### Attributes
 - `airportid` (str): The airport IATA/ICAO code (e.g., "MCO", "KATL")
