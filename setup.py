@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="nasstat",                           
-    version="0.1.0",                          
+    version="0.1.2",                          
     author="Dariel Cruz Rodriguez",
     author_email="hello@dariel.us",
     description="A python wrapper of the United States Federal Aviation Authority's National Airspace System API",

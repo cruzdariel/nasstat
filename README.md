@@ -11,7 +11,7 @@
 #####################################################################
 #####################################################################
 ```
-*Last updated: `Fri March 21 2025`*
+*Last updated: `Mon December 1 2025`*
 
 A python wrapper of the United States Federal Aviation Authority's [National Airspace System](https://nasstatus.faa.gov/) API developed by [Dariel Cruz Rodriguez](dariel.us).
 
